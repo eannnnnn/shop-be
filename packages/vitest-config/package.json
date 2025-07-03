@@ -1,0 +1,26 @@
+{
+  "name": "@shop-be/vitest-config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/base.js",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "exports": {
+    "./base": "./dist/base.js",
+    "./nest": "./dist/nest.js",
+    "./nest-e2e": "./dist/nest-e2e.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "peerDependencies": {
+    "vitest": "^3.0.0"
+  },
+  "devDependencies": {
+    "@shop-be/typescript-config": "workspace:*",
+    "vitest": "^3.0.0"
+  }
+}
