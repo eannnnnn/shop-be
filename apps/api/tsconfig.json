@@ -1,5 +1,5 @@
 {
-  "extends": "@shop-be/typescript-config/base.json",
+  "extends": "@shop-be/typescript-config/nestia.json",
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist"

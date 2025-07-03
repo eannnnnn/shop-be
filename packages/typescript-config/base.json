@@ -12,6 +12,7 @@
     "isolatedModules": true,
     "lib": ["esnext"],
     "module": "NodeNext",
+    "types": ["vitest/globals"],
     "moduleDetection": "force",
     "moduleResolution": "NodeNext",
     "noFallthroughCasesInSwitch": false,
