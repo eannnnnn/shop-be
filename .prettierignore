@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Nestia SDK Generated Files
+apps/*/src/api/
+packages/*-sdk/
+swagger.json
+
+# Other generated files
+.turbo/
+coverage/

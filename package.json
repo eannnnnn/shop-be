@@ -12,7 +12,8 @@
     "test": "turbo run test",
     "test:e2e": "turbo run test:e2e",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md,json}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
+    "build:sdk": "turbo run build:sdk --filter=@shop-be/*-service"
   },
   "devDependencies": {
     "@shop-be/eslint-config": "workspace:*",

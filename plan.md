@@ -1,95 +1,202 @@
-# NestJS + Nestia + Fastify 개발 계획 (TDD)
+# Account Service SDK Generation Plan
 
-## 목표
+## Overview
+This plan outlines the Test-Driven Development (TDD) approach for generating a Nestia SDK from the @apps/account service and distributing it as a shared package in the monorepo.
 
-- NestJS에서 Express를 Fastify로 변경
-- Nestia를 사용하여 타입 안전한 API 개발 환경 구축
-- TDD 방식으로 단계별 구현
+## Current Status
+-  Nestia configuration complete in `apps/account/nestia.config.ts`
+-  TypeScript configuration with Nestia transformers ready
+-  Package scripts for SDK generation available
+- � Controllers need to be created
+- � SDK generation and distribution pending
 
-## 구현 단계 (Red → Green → Refactor)
+## Phase 1: Controller Foundation (TDD)
 
-### 1단계: Fastify 플랫폼 전환
+### Test 1.1: shouldCreateAccountController ✅
+- **Goal**: Create a basic AccountController with health check endpoint
+- **Test**: Unit test for controller instantiation and health endpoint
+- **Implementation**: Create `src/account/account.controller.ts` with `@Controller('account')` and `@Get('health')` endpoint
+- **Expected**: Controller responds with basic health status
 
-- [x] **TEST**: main.ts에서 Fastify 플랫폼 사용 확인 테스트
-- [x] **IMPL**: @nestjs/platform-fastify 설치 및 설정
-- [x] **REFACTOR**: 완료
+### Test 1.2: shouldHaveTypedRouteDecorator ✅
+- **Goal**: Replace @Get with @TypedRoute.Get for Nestia integration
+- **Test**: Verify the controller uses @TypedRoute decorators
+- **Implementation**: Update health endpoint to use `@TypedRoute.Get('health')`
+- **Expected**: Controller works with Nestia's type-safe routing
 
-### 2단계: Nestia 기본 설정
+### Test 1.3: shouldReturnTypedResponse ✅
+- **Goal**: Define proper response types for SDK generation
+- **Test**: Verify health endpoint returns typed response
+- **Implementation**: Create DTO interface for health response
+- **Expected**: Response follows defined type structure
 
-- [x] **TEST**: Nestia 설정 파일 존재 확인 테스트
-- [x] **IMPL**: Nestia 패키지 설치 및 초기 설정
-- [x] **REFACTOR**: 완료
+## Phase 2: SDK Generation (TDD)
 
-### 3단계: Nestia 컨트롤러 기본 구조
+### Test 2.1: shouldGenerateLocalSDK ✅
+- **Goal**: Generate SDK in `src/api` directory
+- **Test**: Run `pnpm nestia:build` and verify local SDK generation
+- **Implementation**: Execute SDK generation command
+- **Expected**: `src/api` directory contains functional SDK code
 
-- [x] **TEST**: @TypedRoute 데코레이터 사용 컨트롤러 테스트
-- [x] **IMPL**: 기본 타입 안전 컨트롤러 구현
-- [x] **REFACTOR**: 완료
+### Test 2.2: shouldGenerateDistributedPackage ✅
+- **Goal**: Generate distributed SDK package in `packages/api-sdk`
+- **Test**: Verify `packages/api-sdk` directory is created with proper structure
+- **Implementation**: Verify distributed package generation
+- **Expected**: Complete package structure with package.json, lib/, and TypeScript files
 
-### 4단계: Nestia @TypedRoute 적용 ✅ **완료**
+### Test 2.3: shouldHaveValidPackageJson ✅
+- **Goal**: Validate generated package.json configuration
+- **Test**: Verify package.json has correct name, dependencies, and scripts
+- **Implementation**: Check package metadata and dependencies
+- **Expected**: Package named `@shop-be/api-sdk` with proper configuration
 
-- [x] **TEST**: @TypedRoute 데코레이터 실제 사용 확인 테스트 (RED 단계 완료)
-- [x] **IMPL**: vitest mock으로 @TypedRoute → @Get 데코레이터 변환 테스트
-- [x] **REFACTOR**: 전역 mock 설정으로 모든 테스트 파일에서 사용 가능
+## Phase 3: Account Service Features (TDD)
 
-**성공적 해결**: vitest의 `vi.mock()`으로 `@TypedRoute.Get`을 `@nestjs/common`의 `@Get`으로 mocking하여 테스트.
+### Test 3.1: shouldCreateAccountDTO ✅
+- **Goal**: Create Account data transfer object
+- **Test**: Unit test for Account DTO with validation
+- **Implementation**: Create `src/account/dto/account.dto.ts` with Typia validation
+- **Expected**: DTO with proper type definitions and validation rules
 
-- `test/setup.ts`에서 전역 mock 설정
-- 모든 13개 테스트 통과 ✅
-- HTTP 요청/응답, 타입 안전성, 메타데이터 검증 완료
+### Test 3.2: shouldCreateAccountService ✅
+- **Goal**: Create AccountService with business logic
+- **Test**: Unit test for AccountService methods
+- **Implementation**: Create `src/account/account.service.ts` with CRUD operations
+- **Expected**: Service handles account operations with proper error handling
 
-### 4.5단계: vitest config에 setup 파일 등록 검증 ✅ **완료**
+### Test 3.3: shouldImplementCreateAccountEndpoint ✅
+- **Goal**: Add POST endpoint for account creation
+- **Test**: E2E test for account creation via HTTP
+- **Implementation**: Add `@TypedRoute.Post()` endpoint with validation
+- **Expected**: Endpoint creates account and returns typed response
 
-- [x] **TEST**: vitest config에서 setup 파일이 제대로 등록되었는지 확인
-- [x] **IMPL**: 이미 올바르게 설정되어 있음을 확인 (`packages/vitest-config/nest.ts`에 `setupFiles: ['./test/setup.ts']` 존재)
-- [x] **REFACTOR**: setup 검증 테스트 5개 추가로 안정성 확보
+### Test 3.4: shouldImplementGetAccountEndpoint ✅
+- **Goal**: Add GET endpoint for account retrieval
+- **Test**: E2E test for account retrieval via HTTP
+- **Implementation**: Add `@TypedRoute.Get(':id')` endpoint
+- **Expected**: Endpoint returns account data with proper typing
 
-**확인된 사항**:
+### Test 3.5: shouldImplementUpdateAccountEndpoint
+- **Goal**: Add PUT endpoint for account updates
+- **Test**: E2E test for account modification via HTTP
+- **Implementation**: Add `@TypedRoute.Put(':id')` endpoint
+- **Expected**: Endpoint updates account and returns confirmation
 
-- ✅ vitest config에 setupFiles 이미 올바르게 설정됨
-- ✅ `apps/api/test/setup.ts` 올바른 위치에 존재
-- ✅ 모든 테스트 파일에서 nestia mock 초기화 로그 확인
-- ✅ **총 18개 테스트 모두 통과** (기존 13개 + setup 검증 5개)
+### Test 3.6: shouldImplementDeleteAccountEndpoint
+- **Goal**: Add DELETE endpoint for account removal
+- **Test**: E2E test for account deletion via HTTP
+- **Implementation**: Add `@TypedRoute.Delete(':id')` endpoint
+- **Expected**: Endpoint removes account and returns confirmation
 
-### 5단계: Nestia SDK 생성 (🔄 다음 시작 예정)
+## Phase 4: SDK Integration (TDD)
 
-- [ ] **TEST**: SDK 생성 스크립트 실행 확인 테스트
-- [ ] **IMPL**: nestia.config.ts 설정 및 SDK 생성 (`npx nestia sdk`)
-- [ ] **REFACTOR**: 생성된 SDK 구조 검증
+### Test 4.1: shouldRegenerateSDKWithAllEndpoints
+- **Goal**: Regenerate SDK with all new endpoints
+- **Test**: Verify SDK contains all CRUD operations
+- **Implementation**: Run `pnpm nestia:build` after adding all endpoints
+- **Expected**: SDK includes type-safe functions for all operations
 
-### 6단계: Nestia E2E 테스트 환경 구축
+### Test 4.2: shouldHaveTypedSDKFunctions
+- **Goal**: Verify SDK functions are properly typed
+- **Test**: Import and test SDK functions in separate test file
+- **Implementation**: Test each generated SDK function
+- **Expected**: All functions have proper TypeScript types and runtime validation
 
-- [ ] **TEST**: @nestia/e2e를 사용한 DynamicExecutor 테스트
-- [ ] **IMPL**:
-  - E2E 테스트 디렉토리 생성 (`nestia e2e`)
-  - test/index.ts에서 DynamicExecutor 설정
-  - SDK를 통한 API 호출 테스트 작성
-- [ ] **REFACTOR**: 테스트 구조 최적화
+### Test 4.3: shouldIntegrateWithOtherServices
+- **Goal**: Test SDK usage in external services
+- **Test**: Create example service that uses the generated SDK
+- **Implementation**: Import and use SDK in mock external service
+- **Expected**: SDK works seamlessly across service boundaries
 
-### 7단계: vitest와 @nestia/e2e 통합
+## Phase 5: Documentation and Swagger (TDD)
 
-- [ ] **TEST**: vitest에서 nestia E2E 테스트 실행 확인
-- [ ] **IMPL**: vitest 설정과 nestia E2E 시스템 연동
-- [ ] **REFACTOR**: 통합 테스트 환경 최적화
+### Test 5.1: shouldGenerateSwaggerDocumentation
+- **Goal**: Generate OpenAPI documentation
+- **Test**: Run `pnpm nestia:swagger` and verify output
+- **Implementation**: Generate swagger.json file
+- **Expected**: Complete OpenAPI specification with all endpoints
 
-## 성공적으로 완료된 기능
+### Test 5.2: shouldHaveValidSwaggerSchema
+- **Goal**: Validate generated Swagger schema
+- **Test**: Verify schema contains all endpoints and DTOs
+- **Implementation**: Parse and validate swagger.json
+- **Expected**: Schema includes all endpoints with proper type definitions
 
-✅ **NestJS + Fastify + Nestia 기본 환경 구축 완료!**
+### Test 5.3: shouldServeSwaggerUI
+- **Goal**: Serve Swagger UI for API documentation
+- **Test**: Access Swagger UI via HTTP endpoint
+- **Implementation**: Configure Swagger UI serving
+- **Expected**: Interactive API documentation available
 
-- Fastify 플랫폼으로 전환 완료
-- Nestia 설정 및 기본 컨트롤러 구현 완료
-- 서버 정상 실행 확인: http://localhost:3000
+## Phase 6: Monorepo Integration (TDD)
 
-## 다음 작업 우선순위
+### Test 6.1: shouldBuildSDKInTurboPipeline
+- **Goal**: Integrate SDK generation into Turbo build pipeline
+- **Test**: Run `pnpm build` and verify SDK is included
+- **Implementation**: Update turbo.json with SDK build tasks
+- **Expected**: SDK builds automatically with monorepo build
 
-1. **즉시 시작**: @TypedRoute 데코레이터 실제 적용 (4단계)
-2. SDK 생성 (5단계)
-3. Nestia E2E 테스트 환경 구축 (6단계)
-4. vitest 통합 (7단계)
+### Test 6.2: shouldHandleGitIgnoreForSDK
+- **Goal**: Configure Git to ignore generated SDK files appropriately
+- **Test**: Verify generated files are properly ignored/tracked
+- **Implementation**: Update .gitignore with SDK-specific rules
+- **Expected**: Local SDK ignored, distributed package tracked
 
-## 참고사항
+### Test 6.3: shouldConfigureESLintForSDK
+- **Goal**: Configure ESLint to ignore generated SDK files
+- **Test**: Run linting and verify no errors on generated files
+- **Implementation**: Update ESLint configuration
+- **Expected**: Generated files excluded from linting
 
-- Nestia는 SDK 기반 E2E 테스트가 핵심
-- `@nestia/e2e`의 `DynamicExecutor`와 `TestValidator` 사용
-- SDK 생성 후 타입 안전한 API 클라이언트로 테스트
-- vitest unit test 보다는 nestia E2E 테스트 중심으로 전환
+### Test 6.4: shouldConfigurePrettierForSDK
+- **Goal**: Configure Prettier to ignore generated SDK files
+- **Test**: Run formatting and verify generated files unchanged
+- **Implementation**: Update Prettier configuration
+- **Expected**: Generated files excluded from formatting
+
+## Phase 7: E2E Testing with SDK (TDD)
+
+### Test 7.1: shouldRunNestiaE2ETests
+- **Goal**: Execute Nestia's E2E test generation
+- **Test**: Run `pnpm nestia:e2e` and verify test generation
+- **Implementation**: Generate E2E test structure
+- **Expected**: Complete E2E test suite for all endpoints
+
+### Test 7.2: shouldPassAllE2ETests
+- **Goal**: All generated E2E tests should pass
+- **Test**: Run generated E2E tests
+- **Implementation**: Execute E2E test suite
+- **Expected**: All tests pass with proper validation
+
+### Test 7.3: shouldIntegrateWithVitest
+- **Goal**: Integrate Nestia E2E tests with Vitest
+- **Test**: Run E2E tests through Vitest configuration
+- **Implementation**: Configure Vitest for E2E testing
+- **Expected**: E2E tests execute through standard test runner
+
+## Success Criteria
+
+1. **Functional SDK**: Generated SDK provides type-safe access to all account service endpoints
+2. **Monorepo Integration**: SDK package is properly distributed and consumable by other services
+3. **Documentation**: Complete OpenAPI documentation with Swagger UI
+4. **Test Coverage**: All endpoints covered by unit and E2E tests
+5. **Development Workflow**: SDK regeneration integrated into build pipeline
+6. **Code Quality**: All generated code follows project standards and is properly excluded from linting
+
+## Key Commands
+
+- `pnpm nestia:build` - Generate SDK
+- `pnpm nestia:swagger` - Generate OpenAPI documentation
+- `pnpm nestia:e2e` - Generate E2E tests
+- `pnpm test` - Run unit tests
+- `pnpm test:e2e` - Run E2E tests
+- `pnpm build` - Build entire monorepo including SDK
+
+## Notes
+
+- Follow strict TDD methodology: Red � Green � Refactor
+- Each test should be small and focused on a single behavior
+- Always run all tests before moving to the next phase
+- Commit frequently with clear messages about structural vs behavioral changes
+- Use meaningful test names that describe expected behavior
+- Implement only the minimum code needed to make tests pass

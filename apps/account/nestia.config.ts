@@ -19,7 +19,7 @@ const config: INestiaConfig = {
       },
     ],
   },
-  distribute: 'packages/api-sdk',
+  distribute: '../../packages/account-sdk',
   primitive: false,
   clone: false,
 };

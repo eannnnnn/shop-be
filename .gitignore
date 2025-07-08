@@ -33,6 +33,10 @@ out/
 build
 dist
 
+# Nestia SDK Generated Files
+swagger.json
+packages/*-sdk/
+
 # IDEs and editors
 /.idea
 .project

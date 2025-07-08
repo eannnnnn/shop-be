@@ -12,6 +12,12 @@
     },
     "lint": {},
     "test": {},
-    "test:e2e": {}
+    "test:e2e": {},
+    "build:sdk": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["^build"],
+      "outputs": []
+    }
   }
 }

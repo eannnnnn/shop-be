@@ -12,6 +12,10 @@ export default [
     ignores: ['apps/**', 'packages/**', 'node_modules/**', '.turbo/**'],
   },
   {
+    name: 'nestia-sdk-ignores',
+    ignores: ['apps/*/src/api/**', 'packages/api-sdk/**', 'swagger.json'],
+  },
+  {
     name: 'root-files',
     files: ['*.js', '*.ts'],
     languageOptions: {

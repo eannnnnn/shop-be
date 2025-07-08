@@ -1,0 +1,36 @@
+{
+  "name": "@shop-be/sdk-config",
+  "version": "0.0.1",
+  "private": true,
+  "description": "SDK configuration tool for managing Nestia SDK packages",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "require": "./src/index.js",
+      "types": "./src/index.d.ts"
+    },
+    "./src/types": {
+      "import": "./src/types.ts",
+      "require": "./src/types.ts",
+      "types": "./src/types.ts"
+    }
+  },
+  "bin": {
+    "sdk-config": "./src/cli.js"
+  },
+  "scripts": {
+    "configure": "node src/cli.js",
+    "sdk-config": "node src/cli.js"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^12.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.8.2"
+  },
+  "devDependencies": {
+    "@shop-be/typescript-config": "workspace:*"
+  }
+}

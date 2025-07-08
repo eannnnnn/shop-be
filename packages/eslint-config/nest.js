@@ -71,14 +71,6 @@ export default [
       // 핵심 NestJS 전용 규칙만 유지 (Nestia 사용으로 OpenAPI 규칙 제외)
       '@darraghor/nestjs-typed/injectable-should-be-provided': 'error',
       '@darraghor/nestjs-typed/param-decorator-name-matches-route-param': 'error',
-
-      // Nestia 사용으로 불필요한 OpenAPI 관련 규칙들 비활성화
-      '@darraghor/nestjs-typed/controllers-should-supply-api-tags': 'off',
-      '@darraghor/nestjs-typed/api-method-should-specify-api-response': 'off',
-      '@darraghor/nestjs-typed/api-property-matches-property-optionality': 'off',
-      '@darraghor/nestjs-typed/api-method-should-specify-api-operation': 'off',
-      '@darraghor/nestjs-typed/api-enum-property-best-practices': 'off',
-      '@darraghor/nestjs-typed/api-property-returning-array-should-set-array': 'off',
     },
   },
 

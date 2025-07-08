@@ -1,2 +1,3 @@
 eslint.config.js
 **/eslint.config.js
+packages/*-sdk/
